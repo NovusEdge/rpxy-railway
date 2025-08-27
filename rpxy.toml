@@ -2,46 +2,46 @@
 # Uses environment variables for flexible deployment
 
 # Server listen configuration
-listen_port = "${PORT:-8080}"
-listen_port_tls = "${TLS_PORT:-8443}"
+listen_port = $PORT
+listen_port_tls = $TLS_PORT
 
 # IPv6 support required for Railway
 listen_ipv6 = true
 listen_ipv6_only = true
 
 # Global performance settings
-worker_threads = "${WORKER_THREADS:-0}"
-max_clients = "${MAX_CLIENTS:-512}"
-tcp_listen_backlog = "${TCP_LISTEN_BACKLOG:-1024}"
+worker_threads = $WORKER_THREADS
+max_clients = $MAX_CLIENTS
+tcp_listen_backlog = $TCP_LISTEN_BACKLOG
 
 # Logging configuration
-log_level = "${LOG_LEVEL:-info}"
+log_level = "$LOG_LEVEL"
 log_to_file = false
 
 # Health check endpoint
 [health_check]
-path = "${HEALTH_CHECK_PATH:-/health}"
+path = "$HEALTH_CHECK_PATH"
 
 # Default application routing
 [apps.default]
-server_name = "${SERVER_NAME:-*}"
+server_name = "$SERVER_NAME"
 default_app = true
 
 [[apps.default.reverse_proxy]]
 upstream = [
-    { location = "${UPSTREAM_URL:-127.0.0.1:3000}" }
+    { location = "$UPSTREAM_URL" }
 ]
-load_balance = "${LOAD_BALANCE:-round_robin}"
-health_check_uri = "${UPSTREAM_HEALTH_CHECK:-/health}"
-health_check_timeout_sec = "${HEALTH_CHECK_TIMEOUT:-10}"
+load_balance = "$LOAD_BALANCE"
+health_check_uri = "$UPSTREAM_HEALTH_CHECK"
+health_check_timeout_sec = $HEALTH_CHECK_TIMEOUT
 
 # Optional: Path-based routing for API endpoints
 [[apps.default.reverse_proxy]]
-path = "${API_PATH:-/api}"
+path = "$API_PATH"
 upstream = [
-    { location = "${API_UPSTREAM_URL:-127.0.0.1:3001}" }
+    { location = "$API_UPSTREAM_URL" }
 ]
-load_balance = "${API_LOAD_BALANCE:-round_robin}"
+load_balance = "$API_LOAD_BALANCE"
 
 # Optional: Custom domain routing (only if CUSTOM_SERVER_NAME is set)
 # Uncomment and configure if needed:
@@ -63,7 +63,7 @@ load_balance = "${API_LOAD_BALANCE:-round_robin}"
 
 # Experimental features
 [experimental]
-h3 = "${ENABLE_HTTP3:-false}"
+h3 = $ENABLE_HTTP3
 
 # ACME/Let's Encrypt configuration (only if email is provided)
 # Uncomment and configure if needed:
