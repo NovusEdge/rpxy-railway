@@ -1,77 +1,73 @@
 # Deploy and Host rpxy on Railway
 
-rpxy is a simple and ultrafast HTTP reverse proxy serving multiple domain names and terminating TLS for HTTP/1.1, 2, and 3, written in Rust. Built for high performance and reliability, rpxy automatically routes traffic to backend services with advanced load balancing, health checking, and TLS termination, making it perfect for microservices architectures and API gateways.
+rpxy is a blazingly fast HTTP reverse proxy written in Rust that outperforms NGINX by 30-60% in reverse proxy scenarios. This Railway template provides zero-configuration deployment with automatic Railway domain handling, IPv6 support, and seamless backend service routing.
 
 ## About Hosting rpxy
 
-Hosting rpxy on Railway involves deploying a high-performance reverse proxy that can route traffic to your backend services with exceptional speed and reliability. This template provides a fully configured rpxy instance with environment variable customization, automatic health checks, path-based routing, and optimized performance settings. Railway's infrastructure handles IPv6 networking and scaling while rpxy manages intelligent traffic distribution at speeds 30-60% faster than traditional solutions like NGINX.
+Hosting rpxy on Railway gives you a production-ready reverse proxy in seconds. Simply deploy the template and set your backend service URL - rpxy automatically handles Railway's domain routing, IPv6 networking, and high-performance request forwarding. Perfect for API gateways, custom domains, and microservices routing with minimal configuration overhead.
 
 ## Common Use Cases
 
-- **API Gateway**: Route incoming requests to multiple backend services based on URL paths and server names
-- **Load Balancing**: Distribute traffic across multiple instances of your application with round-robin or random strategies
-- **Microservices Routing**: Centralize routing logic for complex microservices architectures with advanced path matching
-- **TLS Termination**: Handle HTTPS traffic with automatic certificate management via ACME/Let's Encrypt
-- **High-Performance Proxy**: Replace slower reverse proxies with rpxy's Rust-powered performance advantages
-- **Multi-Domain Hosting**: Serve multiple applications from a single proxy instance with server name matching
+- **API Gateway**: Single entry point for multiple backend services on Railway
+- **Custom Domain Routing**: Point your custom domain to any Railway service  
+- **Frontend Proxy**: Route production domains to your Railway-hosted frontend
+- **Microservices Gateway**: Centralize routing for distributed Railway services
+- **High-Performance Proxy**: 30-60% faster than NGINX for Railway workloads
+- **Development Proxy**: Test production routing setups with Railway preview deployments
 
-## Dependencies for rpxy Hosting
+## Simple 2-Step Setup
 
-- **Backend Services**: At least one backend service that rpxy can route traffic to
-- **Health Check Endpoints**: Backend services should provide health check endpoints for optimal routing and monitoring
+1. **Deploy this template** on Railway
+2. **Set your backend service**:
+   ```bash
+   UPSTREAM_URL=your-backend.railway.internal:8000
+   ```
 
-### Deployment Dependencies
+That's it! Your high-performance reverse proxy is now routing traffic.
 
-- [rpxy Official Repository](https://github.com/junkurihara/rust-rpxy)
-- [Railway Platform Documentation](https://docs.railway.com/)
-- [Docker Hub - rpxy Images](https://hub.docker.com/r/jkrhb/rpxy)
-- [Template Source Code](https://github.com/NovusEdge/rpxy-railway) - ⭐ Star this repo if it helps you!
+## Template Features
+
+✅ **Zero Configuration** - Works immediately after deployment  
+✅ **Railway Optimized** - Automatic domain detection and IPv6 support  
+✅ **High Performance** - 30-60% faster than NGINX  
+✅ **Production Ready** - Handles enterprise-level traffic  
+✅ **Simple Management** - Just one environment variable to configure
 
 ### Implementation Details
 
-This template uses a startup script with `envsubst` for dynamic configuration:
+This template uses a lightweight shell script that generates optimal rpxy configuration:
 
 ```bash
-# Generate configuration from template
-envsubst < /etc/rpxy/rpxy.toml.template > /etc/rpxy/rpxy.toml
+# Automatic Railway domain detection
+RAILWAY_STATIC_URL=${RAILWAY_STATIC_URL:-*}
 
-# Start rpxy with generated config
-exec rpxy -c /etc/rpxy/rpxy.toml
+# Generate optimized rpxy config
+cat > /etc/rpxy/rpxy.toml << EOF
+listen_port = ${PORT}
+listen_ipv6 = true
+
+[apps.railway]
+server_name = '${RAILWAY_STATIC_URL}'
+reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
+
+[apps.catchall]
+server_name = '*'
+reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
+EOF
 ```
 
-Key environment variables for configuration:
-```bash
-UPSTREAM_URL=your-service.railway.internal:3000
-SERVER_NAME=your-domain.com
-LOAD_BALANCE=round_robin    # or 'random'
-LOG_LEVEL=info             # Default log verbosity
-HEALTH_CHECK_PATH=/health   # Health check endpoint
-```
+### Key Technical Features
 
-Advanced routing configuration:
-```bash
-# Path-based routing for APIs
-API_PATH=/api
-API_UPSTREAM_URL=api-service.railway.internal:8080
+- **Automatic IPv6 Support** - Required for Railway's infrastructure
+- **Dual Domain Matching** - Handles both Railway domains and wildcards  
+- **Optimized Configuration** - Minimal overhead, maximum performance
+- **Production Hardened** - No unsupported fields or configuration warnings
 
-# Multiple domain support
-CUSTOM_SERVER_NAME=api.example.com
-CUSTOM_UPSTREAM_URL=api-backend.railway.internal:4000
-```
+### Links
 
-Performance optimization settings:
-```bash
-WORKER_THREADS=0           # Auto-detect CPU cores
-MAX_CLIENTS=512           # Concurrent connection limit
-ENABLE_HTTP3=false        # HTTP/3 protocol support
-```
-
-TLS and ACME configuration:
-```bash
-ACME_EMAIL=admin@example.com
-ACME_STAGING=false
-TLS_PORT=8443
-```
+- [rpxy Official Repository](https://github.com/junkurihara/rust-rpxy) - ⭐ High-performance Rust proxy
+- [Template Source Code](https://github.com/NovusEdge/rpxy-railway) - ⭐ Star this repo if it helps you!
+- [Railway Documentation](https://docs.railway.com/) - Platform documentation
 
 ## Why Deploy rpxy on Railway?
 

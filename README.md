@@ -1,176 +1,113 @@
 # rpxy Railway Template
 
-A high-performance Rust-based HTTP reverse proxy template for Railway deployment. This template provides a fully configured rpxy instance with environment variable customization, automatic health checks, and optimized performance settings.
+A high-performance Rust-based HTTP reverse proxy template for Railway deployment. rpxy is 30-60% faster than NGINX and provides seamless reverse proxy functionality with automatic Railway domain handling and IPv6 support.
 
 ## About rpxy
 
-rpxy is a simple and ultrafast HTTP reverse proxy serving multiple domain names and terminating TLS for HTTP/1.1, 2, and 3, written in Rust. It significantly outperforms NGINX and Caddy in simple reverse proxy scenarios.
+rpxy is a simple and ultrafast HTTP reverse proxy serving multiple domain names and terminating TLS for HTTP/1.1, 2, and 3, written in Rust. Perfect for API gateways, load balancing, and microservices routing on Railway.
 
 ## Features
 
-- **High Performance**: 30-60% faster than NGINX in simple reverse proxy scenarios
-- **HTTP/3 Support**: Full support for HTTP/1.1, HTTP/2, and HTTP/3
-- **Load Balancing**: Round-robin and random load balancing strategies
-- **Health Checks**: Automatic upstream health monitoring
-- **TLS Termination**: Built-in TLS support with ACME/Let's Encrypt integration
-- **Path-based Routing**: Route requests based on URL paths
-- **Environment Variable Configuration**: Fully configurable via environment variables
+- **High Performance**: 30-60% faster than NGINX in reverse proxy scenarios
+- **Railway Optimized**: Automatic Railway domain matching and IPv6 support
+- **Simple Configuration**: Just set `UPSTREAM_URL` and deploy
+- **HTTP/1.1, 2, 3 Support**: Full modern HTTP protocol support
+- **Zero Configuration**: Works out of the box with Railway services
+- **Production Ready**: Handles high-traffic workloads efficiently
 
 ## Quick Deploy to Railway
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/4ZJq89?referralCode=dF1nvZ&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
-## Manual Deployment
+## Setup (2 steps)
 
-1. Clone this repository
-2. Set your environment variables (see Configuration section)
-3. Deploy to Railway or run locally with Docker
+1. **Deploy this template** to Railway
+2. **Set your backend service URL**:
+   ```bash
+   UPSTREAM_URL=your-backend.railway.internal:3000
+   ```
+
+That's it! Your reverse proxy is now running and will route all requests to your backend service.
 
 ## Configuration
 
-### Required Environment Variables
+### Required Environment Variable
 
-- `UPSTREAM_URL` - The backend service URL to proxy to (e.g., `your-app.railway.internal:3000`)
+- `UPSTREAM_URL` - Your backend service URL (e.g., `api.railway.internal:8080`)
 
 ### Optional Environment Variables
 
-| Variable                | Default       | Description                                           |
-| ----------------------- | ------------- | ----------------------------------------------------- |
-| `PORT`                  | `8080`        | Port for HTTP traffic                                 |
-| `TLS_PORT`              | `8443`        | Port for HTTPS traffic                                |
-| `SERVER_NAME`           | `*`           | Server name to match (use `*` for all)                |
-| `LOAD_BALANCE`          | `round_robin` | Load balancing strategy (`round_robin` or `random`)   |
-| `LOG_LEVEL`             | `info`        | Log level (`error`, `warn`, `info`, `debug`, `trace`) |
-| `HEALTH_CHECK_PATH`     | `/health`     | Health check endpoint path                            |
-| `UPSTREAM_HEALTH_CHECK` | `/health`     | Upstream health check path                            |
-| `HEALTH_CHECK_TIMEOUT`  | `10`          | Health check timeout in seconds                       |
+| Variable      | Default | Description                           |
+| ------------- | ------- | ------------------------------------- |
+| `SERVER_NAME` | `*`     | Specific domain to match (optional)   |
+| `PORT`        | `8080`  | Port for the proxy (Railway manages) |
 
-### Advanced Configuration
+## How It Works
 
-| Variable              | Description                                |
-| --------------------- | ------------------------------------------ |
-| `API_PATH`            | Path prefix for API routing (e.g., `/api`) |
-| `API_UPSTREAM_URL`    | Separate upstream for API requests         |
-| `CUSTOM_SERVER_NAME`  | Additional server name for custom domain   |
-| `CUSTOM_UPSTREAM_URL` | Upstream for custom domain                 |
-| `WORKER_THREADS`      | Number of worker threads (0 = auto)        |
-| `MAX_CLIENTS`         | Maximum concurrent connections             |
-| `ENABLE_HTTP3`        | Enable HTTP/3 support (`true`/`false`)     |
+The template automatically:
+1. **Detects your Railway domain** using `RAILWAY_STATIC_URL`
+2. **Handles IPv6 networking** required by Railway infrastructure  
+3. **Routes all requests** from `https://your-app.up.railway.app/*` to `http://your-backend:port/*`
+4. **Provides high performance** with Rust-based rpxy proxy
 
-### TLS/ACME Configuration
+## Example Usage
 
-| Variable        | Description                                |
-| --------------- | ------------------------------------------ |
-| `TLS_CERT_PATH` | Path to TLS certificate file               |
-| `TLS_KEY_PATH`  | Path to TLS private key file               |
-| `ACME_EMAIL`    | Email for Let's Encrypt registration       |
-| `ACME_STAGING`  | Use Let's Encrypt staging (`true`/`false`) |
-| `ACME_DIR_URL`  | ACME directory URL                         |
-
-## Example Configurations
-
-### Simple Proxy Setup
-
+### Basic API Proxy
 ```bash
-UPSTREAM_URL=myapp.railway.internal:3000
-SERVER_NAME=myapp.example.com
+UPSTREAM_URL=my-api.railway.internal:8080
 ```
+Routes `https://your-proxy.up.railway.app/api/users` → `http://my-api.railway.internal:8080/api/users`
 
-### API Gateway with Path Routing
-
+### Frontend + API Setup  
 ```bash
-UPSTREAM_URL=frontend.railway.internal:3000
-API_PATH=/api
-API_UPSTREAM_URL=backend.railway.internal:8080
-SERVER_NAME=myapp.example.com
+UPSTREAM_URL=my-frontend.railway.internal:3000
 ```
+Perfect for routing a custom domain to your frontend service.
 
-### Multiple Domain Setup
-
+### Microservice Gateway
 ```bash
-# Default app
-UPSTREAM_URL=app1.railway.internal:3000
-SERVER_NAME=app1.example.com
-
-# Custom domain
-CUSTOM_SERVER_NAME=app2.example.com
-CUSTOM_UPSTREAM_URL=app2.railway.internal:4000
+UPSTREAM_URL=gateway-service.railway.internal:4000
 ```
+Centralizes routing for multiple microservices behind one domain.
 
-## Health Checks
+## Common Use Cases
 
-rpxy includes built-in health checking for upstream services. Configure health checks using:
+- **Custom Domain Routing**: Point custom domains to Railway services
+- **API Gateway**: Single entry point for multiple backend services  
+- **Load Distribution**: High-performance alternative to traditional proxies
+- **SSL Termination**: Let Railway handle HTTPS, proxy to HTTP backends
+- **Development**: Test production routing setups locally
 
-- `UPSTREAM_HEALTH_CHECK`: Path to check on upstream services
-- `HEALTH_CHECK_TIMEOUT`: Timeout for health check requests
-- `HEALTH_CHECK_PATH`: Path for rpxy's own health check endpoint
+## Performance
 
-## Performance Tuning
+rpxy delivers exceptional performance:
+- **1.5x faster** than NGINX in simple reverse proxy scenarios
+- **Built with Rust** for memory safety and speed
+- **HTTP/3 ready** for next-generation web performance
+- **Automatic optimization** for Railway's infrastructure
 
-### Worker Threads
+## Troubleshooting
 
-Set `WORKER_THREADS` to optimize for your workload:
+### 503 Service Unavailable
+- Check that your `UPSTREAM_URL` service is running
+- Verify the internal Railway service name and port
+- Ensure the backend service is healthy
 
-- `0` (default): Auto-detect based on CPU cores
-- `1-N`: Specific number of worker threads
-
-### Connection Limits
-
-- `MAX_CLIENTS`: Maximum concurrent connections (default: 512)
-- `TCP_LISTEN_BACKLOG`: TCP listen backlog size (default: 1024)
+### 404 Not Found  
+- The proxy is working! Your backend doesn't have that endpoint
+- Check your backend service logs
 
 ## Local Development
 
 ```bash
-# Clone the repository
-git clone <this-repo-url>
+git clone <this-repo>
 cd rpxy-railway
 
-# Set environment variables
+# Test locally
 export UPSTREAM_URL=localhost:3000
-export PORT=8080
-
-# Build and run with Docker
-docker build -t rpxy-proxy .
-docker run -p 8080:8080 rpxy-proxy
+docker build -t rpxy .
+docker run -p 8080:8080 rpxy
 ```
-
-## Load Balancing
-
-rpxy supports multiple load balancing strategies:
-
-- `round_robin`: Distribute requests evenly across upstreams
-- `random`: Randomly select upstream for each request
-
-Configure multiple upstreams by separating them with commas:
-
-```bash
-UPSTREAM_URL=app1.railway.internal:3000,app2.railway.internal:3000,app3.railway.internal:3000
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **502 Bad Gateway**: Check that `UPSTREAM_URL` is correct and reachable
-2. **Health Check Failures**: Verify `UPSTREAM_HEALTH_CHECK` path exists
-3. **IPv6 Issues**: rpxy is configured for IPv6 support required by Railway
-
-### Debug Mode
-
-Enable debug logging:
-
-```bash
-LOG_LEVEL=debug
-```
-
-### Connection Issues
-
-Check upstream connectivity:
-
-- Ensure upstream services are running
-- Verify Railway internal networking setup
-- Check firewall and port configurations
 
 ## Contributing
 
