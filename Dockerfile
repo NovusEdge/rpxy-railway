@@ -20,9 +20,7 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start-rpxy.sh && \
 # Expose port (will be overridden by Railway's PORT env var)
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}${HEALTH_CHECK_PATH:-/health} || exit 1
+# Health check removed - Railway handles health checking
 
 # Start rpxy with processed configuration
 CMD ["/usr/local/bin/start-rpxy.sh"]
