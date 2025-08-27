@@ -15,13 +15,10 @@ listen_port = ${PORT}
 # IPv6 support for Railway
 listen_ipv6 = true
 
-[apps.default]
-server_name = '${SERVER_NAME}'
-reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
-
-# Catch-all app for any hostname
-[apps.catchall]  
+# Single catch-all app to handle all requests
+[apps.catchall]
 server_name = '*'
+default_app = true
 reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
 EOF
 
