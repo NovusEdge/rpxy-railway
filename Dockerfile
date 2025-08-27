@@ -1,7 +1,7 @@
 FROM jqtype/rpxy:latest
 
 # Install envsubst for environment variable substitution
-RUN apk add --no-cache gettext
+RUN apt-get update && apt-get install -y gettext-base && rm -rf /var/lib/apt/lists/*
 
 # Create directory for configuration
 RUN mkdir -p /etc/rpxy
