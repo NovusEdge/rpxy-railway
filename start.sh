@@ -18,7 +18,6 @@ listen_ipv6 = true
 # Single catch-all app to handle all requests
 [apps.catchall]
 server_name = '*'
-default_app = true
 reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
 EOF
 
