@@ -24,6 +24,22 @@ RUN echo "=== Checking for rpxy binaries ===" && \
 # Create startup script that processes environment variables
 RUN echo '#!/bin/sh' > /usr/local/bin/start-rpxy.sh && \
     echo 'echo "Processing rpxy configuration with environment variables..."' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export PORT=${PORT:-8080}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export TLS_PORT=${TLS_PORT:-8443}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export SERVER_NAME=${SERVER_NAME:-*}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export UPSTREAM_URL=${UPSTREAM_URL:-127.0.0.1:3000}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export LOAD_BALANCE=${LOAD_BALANCE:-round_robin}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export LOG_LEVEL=${LOG_LEVEL:-info}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export HEALTH_CHECK_PATH=${HEALTH_CHECK_PATH:-/health}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export UPSTREAM_HEALTH_CHECK=${UPSTREAM_HEALTH_CHECK:-/health}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export HEALTH_CHECK_TIMEOUT=${HEALTH_CHECK_TIMEOUT:-10}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export WORKER_THREADS=${WORKER_THREADS:-0}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export MAX_CLIENTS=${MAX_CLIENTS:-512}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export TCP_LISTEN_BACKLOG=${TCP_LISTEN_BACKLOG:-1024}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export API_PATH=${API_PATH:-/api}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export API_UPSTREAM_URL=${API_UPSTREAM_URL:-127.0.0.1:3001}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export API_LOAD_BALANCE=${API_LOAD_BALANCE:-round_robin}' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'export ENABLE_HTTP3=${ENABLE_HTTP3:-false}' >> /usr/local/bin/start-rpxy.sh && \
     echo 'envsubst < /etc/rpxy/rpxy.toml.template > /etc/rpxy/rpxy.toml' >> /usr/local/bin/start-rpxy.sh && \
     echo 'echo "Generated config:"' >> /usr/local/bin/start-rpxy.sh && \
     echo 'cat /etc/rpxy/rpxy.toml' >> /usr/local/bin/start-rpxy.sh && \
