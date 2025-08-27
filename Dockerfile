@@ -34,10 +34,8 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start-rpxy.sh && \
     echo 'ls -la /usr/local/bin/ | grep rpxy || echo "No rpxy in /usr/local/bin"' >> /usr/local/bin/start-rpxy.sh && \
     echo 'ls -la /usr/bin/ | grep rpxy || echo "No rpxy in /usr/bin"' >> /usr/local/bin/start-rpxy.sh && \
     echo 'which rpxy || echo "rpxy not in PATH"' >> /usr/local/bin/start-rpxy.sh && \
-    echo 'echo "Trying to start rpxy..."' >> /usr/local/bin/start-rpxy.sh && \
-    echo '/usr/local/bin/rpxy --config /etc/rpxy/rpxy.toml 2>&1 || echo "rpxy not at /usr/local/bin/rpxy"' >> /usr/local/bin/start-rpxy.sh && \
-    echo '/usr/bin/rpxy --config /etc/rpxy/rpxy.toml 2>&1 || echo "rpxy not at /usr/bin/rpxy"' >> /usr/local/bin/start-rpxy.sh && \
-    echo 'rpxy --config /etc/rpxy/rpxy.toml 2>&1 || echo "rpxy not in PATH"' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'echo "Starting rpxy from /rpxy/bin/rpxy..."' >> /usr/local/bin/start-rpxy.sh && \
+    echo 'exec /rpxy/bin/rpxy --config /etc/rpxy/rpxy.toml' >> /usr/local/bin/start-rpxy.sh && \
     chmod +x /usr/local/bin/start-rpxy.sh
 
 # Expose port (will be overridden by Railway's PORT env var)
