@@ -15,6 +15,11 @@ listen_port = ${PORT}
 [apps.default]
 server_name = '${SERVER_NAME}'
 reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
+
+# Catch-all app for any hostname
+[apps.catchall]  
+server_name = '*'
+reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
 EOF
 
 echo "Generated config:"
