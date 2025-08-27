@@ -18,7 +18,7 @@ rpxy is a simple and ultrafast HTTP reverse proxy serving multiple domain names 
 
 ## Quick Deploy to Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/rpxy-proxy)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/4ZJq89?referralCode=dF1nvZ&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 ## Manual Deployment
 
