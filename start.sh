@@ -12,6 +12,9 @@ cat > /etc/rpxy/rpxy.toml << EOF
 # rpxy Configuration for Railway
 listen_port = ${PORT}
 
+# IPv6 support for Railway
+listen_ipv6 = true
+
 [apps.default]
 server_name = '${SERVER_NAME}'
 reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
