@@ -43,28 +43,31 @@ upstream = [
 ]
 load_balance = "${API_LOAD_BALANCE:-round_robin}"
 
-# Optional: Custom domain routing
-[apps.custom]
-server_name = "${CUSTOM_SERVER_NAME}"
-default_app = false
+# Optional: Custom domain routing (only if CUSTOM_SERVER_NAME is set)
+# Uncomment and configure if needed:
+# [apps.custom]
+# server_name = "${CUSTOM_SERVER_NAME}"
+# default_app = false
+# 
+# [[apps.custom.reverse_proxy]]
+# upstream = [
+#     { location = "${CUSTOM_UPSTREAM_URL}" }
+# ]
+# load_balance = "${CUSTOM_LOAD_BALANCE:-round_robin}"
 
-[[apps.custom.reverse_proxy]]
-upstream = [
-    { location = "${CUSTOM_UPSTREAM_URL}" }
-]
-load_balance = "${CUSTOM_LOAD_BALANCE:-round_robin}"
-
-# TLS Configuration (optional)
-[tls]
-tls_cert_path = "${TLS_CERT_PATH}"
-tls_cert_key_path = "${TLS_KEY_PATH}"
+# TLS Configuration (only if cert paths are provided)
+# Uncomment and configure if needed:
+# [tls]
+# tls_cert_path = "${TLS_CERT_PATH}"
+# tls_cert_key_path = "${TLS_KEY_PATH}"
 
 # Experimental features
 [experimental]
 h3 = "${ENABLE_HTTP3:-false}"
 
-# ACME/Let's Encrypt configuration
-[experimental.acme]
-dir_url = "${ACME_DIR_URL:-https://acme-v02.api.letsencrypt.org/directory}"
-email = "${ACME_EMAIL}"
-staging = "${ACME_STAGING:-false}"
+# ACME/Let's Encrypt configuration (only if email is provided)
+# Uncomment and configure if needed:
+# [experimental.acme]
+# dir_url = "${ACME_DIR_URL:-https://acme-v02.api.letsencrypt.org/directory}"
+# email = "${ACME_EMAIL}"
+# staging = "${ACME_STAGING:-false}"
