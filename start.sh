@@ -7,19 +7,14 @@ PORT=${PORT:-8080}
 SERVER_NAME=${SERVER_NAME:-*}
 UPSTREAM_URL=${UPSTREAM_URL:-127.0.0.1:3000}
 
-# Generate minimal working config
+# Generate correct rpxy config based on official examples
 cat > /etc/rpxy/rpxy.toml << EOF
-# rpxy Configuration
+# rpxy Configuration for Railway
 listen_port = ${PORT}
 
 [apps.default]
-server_name = "${SERVER_NAME}"
-default_app = true
-
-[[apps.default.reverse_proxy]]
-upstream = [
-    { location = "${UPSTREAM_URL}" }
-]
+server_name = '${SERVER_NAME}'
+reverse_proxy = [{ upstream = [{ location = '${UPSTREAM_URL}' }] }]
 EOF
 
 echo "Generated config:"
