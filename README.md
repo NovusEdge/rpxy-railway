@@ -34,38 +34,38 @@ rpxy is a simple and ultrafast HTTP reverse proxy serving multiple domain names 
 
 ### Optional Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `8080` | Port for HTTP traffic |
-| `TLS_PORT` | `8443` | Port for HTTPS traffic |
-| `SERVER_NAME` | `*` | Server name to match (use `*` for all) |
-| `LOAD_BALANCE` | `round_robin` | Load balancing strategy (`round_robin` or `random`) |
-| `LOG_LEVEL` | `info` | Log level (`error`, `warn`, `info`, `debug`, `trace`) |
-| `HEALTH_CHECK_PATH` | `/health` | Health check endpoint path |
-| `UPSTREAM_HEALTH_CHECK` | `/health` | Upstream health check path |
-| `HEALTH_CHECK_TIMEOUT` | `10` | Health check timeout in seconds |
+| Variable                | Default       | Description                                           |
+| ----------------------- | ------------- | ----------------------------------------------------- |
+| `PORT`                  | `8080`        | Port for HTTP traffic                                 |
+| `TLS_PORT`              | `8443`        | Port for HTTPS traffic                                |
+| `SERVER_NAME`           | `*`           | Server name to match (use `*` for all)                |
+| `LOAD_BALANCE`          | `round_robin` | Load balancing strategy (`round_robin` or `random`)   |
+| `LOG_LEVEL`             | `info`        | Log level (`error`, `warn`, `info`, `debug`, `trace`) |
+| `HEALTH_CHECK_PATH`     | `/health`     | Health check endpoint path                            |
+| `UPSTREAM_HEALTH_CHECK` | `/health`     | Upstream health check path                            |
+| `HEALTH_CHECK_TIMEOUT`  | `10`          | Health check timeout in seconds                       |
 
 ### Advanced Configuration
 
-| Variable | Description |
-|----------|-------------|
-| `API_PATH` | Path prefix for API routing (e.g., `/api`) |
-| `API_UPSTREAM_URL` | Separate upstream for API requests |
-| `CUSTOM_SERVER_NAME` | Additional server name for custom domain |
-| `CUSTOM_UPSTREAM_URL` | Upstream for custom domain |
-| `WORKER_THREADS` | Number of worker threads (0 = auto) |
-| `MAX_CLIENTS` | Maximum concurrent connections |
-| `ENABLE_HTTP3` | Enable HTTP/3 support (`true`/`false`) |
+| Variable              | Description                                |
+| --------------------- | ------------------------------------------ |
+| `API_PATH`            | Path prefix for API routing (e.g., `/api`) |
+| `API_UPSTREAM_URL`    | Separate upstream for API requests         |
+| `CUSTOM_SERVER_NAME`  | Additional server name for custom domain   |
+| `CUSTOM_UPSTREAM_URL` | Upstream for custom domain                 |
+| `WORKER_THREADS`      | Number of worker threads (0 = auto)        |
+| `MAX_CLIENTS`         | Maximum concurrent connections             |
+| `ENABLE_HTTP3`        | Enable HTTP/3 support (`true`/`false`)     |
 
 ### TLS/ACME Configuration
 
-| Variable | Description |
-|----------|-------------|
-| `TLS_CERT_PATH` | Path to TLS certificate file |
-| `TLS_KEY_PATH` | Path to TLS private key file |
-| `ACME_EMAIL` | Email for Let's Encrypt registration |
-| `ACME_STAGING` | Use Let's Encrypt staging (`true`/`false`) |
-| `ACME_DIR_URL` | ACME directory URL |
+| Variable        | Description                                |
+| --------------- | ------------------------------------------ |
+| `TLS_CERT_PATH` | Path to TLS certificate file               |
+| `TLS_KEY_PATH`  | Path to TLS private key file               |
+| `ACME_EMAIL`    | Email for Let's Encrypt registration       |
+| `ACME_STAGING`  | Use Let's Encrypt staging (`true`/`false`) |
+| `ACME_DIR_URL`  | ACME directory URL                         |
 
 ## Example Configurations
 
@@ -108,11 +108,14 @@ rpxy includes built-in health checking for upstream services. Configure health c
 ## Performance Tuning
 
 ### Worker Threads
+
 Set `WORKER_THREADS` to optimize for your workload:
+
 - `0` (default): Auto-detect based on CPU cores
 - `1-N`: Specific number of worker threads
 
 ### Connection Limits
+
 - `MAX_CLIENTS`: Maximum concurrent connections (default: 512)
 - `TCP_LISTEN_BACKLOG`: TCP listen backlog size (default: 1024)
 
@@ -140,6 +143,7 @@ rpxy supports multiple load balancing strategies:
 - `random`: Randomly select upstream for each request
 
 Configure multiple upstreams by separating them with commas:
+
 ```bash
 UPSTREAM_URL=app1.railway.internal:3000,app2.railway.internal:3000,app3.railway.internal:3000
 ```
@@ -155,6 +159,7 @@ UPSTREAM_URL=app1.railway.internal:3000,app2.railway.internal:3000,app3.railway.
 ### Debug Mode
 
 Enable debug logging:
+
 ```bash
 LOG_LEVEL=debug
 ```
@@ -162,6 +167,7 @@ LOG_LEVEL=debug
 ### Connection Issues
 
 Check upstream connectivity:
+
 - Ensure upstream services are running
 - Verify Railway internal networking setup
 - Check firewall and port configurations

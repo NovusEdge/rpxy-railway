@@ -1,4 +1,4 @@
-FROM jkrhb/rpxy:latest
+FROM jqtype/rpxy:latest
 
 # Install envsubst for environment variable substitution
 RUN apk add --no-cache gettext
